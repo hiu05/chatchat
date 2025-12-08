@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const verifySchema = new mongoose.Schema({
     email: { type: String },
-    vefiedCode: { type: String },
+    verifyCode: { type: String },
     isUse: { type: Boolean, default: false },
     emailVerifiedAt: { type: Date },
-    expresionVerifiedAt: { type: Date },
+    expiresAt: { type: Date },
 }, {
     timestamps: true
 })

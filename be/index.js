@@ -20,7 +20,7 @@ import { privateRoute } from './middleware/authMiddleware.js';
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-app.use('/auth', authRouter);
+app.use('/api/auth', authRouter);
 
 // private
 app.use('/api/user',privateRoute , userRouter);

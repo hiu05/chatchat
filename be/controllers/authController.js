@@ -5,6 +5,7 @@ import SessionModel from "../models/sessionModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import VerifyModel from "../models/verifyModel.js";
 
 const signUp = async (req, res) => {
     try {
@@ -13,6 +14,16 @@ const signUp = async (req, res) => {
 
     if (!username || !password || !email) {
         return res.status(400).json({ error: 'Username, password, and email are required' });
+    }
+
+    const existingVerify = await VerifyModel.findOne({ email: email, isUse: false }).sort({ createdAt: -1 });
+    if (!existingVerify) {
+        return  res.status(400).json({ error: 'No verification code found for this email' });
+    }
+    
+    const isCodeValid = await bcrypt.compare(verifyCode, existingVerify.verifyCode);
+    if (!isCodeValid) {
+        return res.status(400).json({ error: 'Invalid verification code' });
     }
 
     const passwordHash = await bcrypt.hashSync(password, 10); 

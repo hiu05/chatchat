@@ -1,8 +1,11 @@
-import VerifyModel from "../models/verifyModel";
+import VerifyModel from "../models/verifyModel.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
-const sendVerificationCode = (receiver) => {
+export const sendOTP = async (req, res) => {  
+    const { receiver } =  req.body;
+    const OTP_TTL = 10 * 60 * 1000; // 10 minutes in milliseconds
+
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -11,15 +14,16 @@ const sendVerificationCode = (receiver) => {
         }
     });
 
-    const verifiedCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const verifyCode = Math.floor(100000 + Math.random() * 900000).toString()
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: receiver,
         subject: "Xin chào từ Nodemailer",
-        text: `Đây là nội dung email dạng ${verifiedCode}`,
-        html: "<h1>Đây là nội dung email dạng HTML</h1>"
+        text: ` ${verifyCode}`,
     };
+
+    const hashedCode = await bcrypt.hashSync(verifyCode, 10);
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -30,14 +34,10 @@ const sendVerificationCode = (receiver) => {
             res.status(200).send("Email sent successfully");
         }
     })
-    .then(() => {
-
-        const newVerify = new VerifyModel({
-            email: receiver,
-            vefiedCode: verifiedCode,
-        });
-        newVerify.save();
-
-    })
-
+    const newVerify = new VerifyModel({
+        email: receiver,
+        verifyCode: hashedCode,
+        expiresAt: new Date(Date.now() + OTP_TTL),
+    });
+    newVerify.save();
 };
