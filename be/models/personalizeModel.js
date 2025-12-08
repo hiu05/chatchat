@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const personalizeSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     avatarUrl: { type: String },
     avatarId: { type: String },
     bio: { type: String, maxlength: 500 },
@@ -11,6 +11,6 @@ const personalizeSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const Personalize = mongoose.model("Personalize", personalizeSchema);
+const PersonalizeModel = mongoose.model("Personalize", personalizeSchema);
 
-export default Personalize;
+export default PersonalizeModel;

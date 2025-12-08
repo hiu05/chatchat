@@ -1,55 +1,14 @@
 import UserModel from "../Models/userModel.js";
-import VerifyModel from "../models/verifyModel.js";
+import PersonalizeModel from "../models/personalizeModel.js";
 import { isDuplicate } from "../libs/dupcheck.js";
 import SessionModel from "../models/sessionModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 import crypto from "crypto";
-
-const sendVerificationCode = (receiver) => {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL_USER, // email của bạn
-            pass: process.env.EMAIL_PASS  // app password
-        }
-    });
-
-    const verifiedCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: receiver,
-        subject: "Xin chào từ Nodemailer",
-        text: `Đây là nội dung email dạng ${verifiedCode}`,
-        html: "<h1>Đây là nội dung email dạng HTML</h1>"
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log("Lỗi khi gửi email:", error);
-            res.status(500).send("Lỗi khi gửi email");
-        } else {
-            console.log("Email sent: " + info.response);
-            res.status(200).send("Email sent successfully");
-        }
-    })
-    .then(() => {
-
-        const newVerify = new VerifyModel({
-            email: receiver,
-            vefiedCode: verifiedCode,
-        });
-        newVerify.save();
-
-    })
-
-};
 
 const signUp = async (req, res) => {
     try {
-    const { username, password, phone } = req.body;
+    const { username, password, phone, verifyCode} = req.body;
     const email = String(req.body.email || "").trim().toLowerCase();
 
     if (!username || !password || !email) {
@@ -66,14 +25,22 @@ const signUp = async (req, res) => {
     });
 
     const checkDuplicate = await isDuplicate(UserModel, 'email', email);
-
     if (checkDuplicate) {
         return res.status(409).json({ error: 'Email already exists' });
     }
 
+    const newPersonalize = new PersonalizeModel({
+        userId: newUser._id,
+    });
+    await newPersonalize.save();
+    newUser.personalizeId = newPersonalize._id;
+
     newUser.save()
         .then(user => res.status(201).json({ message: 'User created successfully', user }))
         .catch(err => res.status(500).json({ error: 'Error creating user', details: err }));
+    
+    
+
     } catch (err) {
         res.status(500).json({ error: 'Internal server error', details: err });
     }
@@ -135,7 +102,20 @@ const signIn = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: 'Internal server error', details: err });
     }
-
 };
 
-export { signUp, signIn };
+const signOut = async (req, res) => {
+    try {
+        const refreshToken = req.cookies?.refreshToken;
+        if (refreshToken) {
+            await SessionModel.deleteOne({ refreshToken });
+            res.clearCookie('refreshToken');
+        }
+        return res.status(200).json({ message: 'Sign-out successful' });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error', details: err });
+    }
+};
+
+
+export { signUp, signIn, signOut };
