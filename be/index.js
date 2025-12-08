@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 // Import routers
-import userRouter from './routes/userRouter.js';
+import authRouter from './routes/authRouter.js';
 
 // public
 app.get('/', (req, res) => {
@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 // private
-app.use('/auth', userRouter);
+app.use('/auth', authRouter);
 
 
 
