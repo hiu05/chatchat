@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 // private
-app.use('/api/users', userRouter);
+app.use('/auth', userRouter);
 
 
 
