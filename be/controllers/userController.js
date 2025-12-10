@@ -2,7 +2,6 @@ import UserModel from '../Models/userModel.js';
 
 export const getUserProfile = async (req, res) => {
     try {
-        console.log("Authenticated user ID:", req.user);
         const userId = req.user.userId;
         const user = await UserModel.findById(userId).select('-password').populate('personalizeId');
         if (!user) {

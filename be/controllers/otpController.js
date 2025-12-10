@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
 export const sendOTP = async (req, res) => {  
-    const { receiver } =  req.body;
+    const { email } =  req.body;
     const OTP_TTL = 10 * 60 * 1000; // 10 minutes in milliseconds
 
     const transporter = nodemailer.createTransport({
@@ -18,7 +18,7 @@ export const sendOTP = async (req, res) => {
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: receiver,
+        to: email,
         subject: "Xin chào từ Nodemailer",
         text: ` ${verifyCode}`,
     };
@@ -35,7 +35,7 @@ export const sendOTP = async (req, res) => {
         }
     })
     const newVerify = new VerifyModel({
-        email: receiver,
+        email: email,
         verifyCode: hashedCode,
         expiresAt: new Date(Date.now() + OTP_TTL),
     });

@@ -77,8 +77,8 @@ const signUp = async (req, res) => {
 const signIn = async (req, res) => {
     try {
     //check input
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
         return res.status(400).json({ error: 'Email and password are required' });
     }
 
@@ -86,7 +86,7 @@ const signIn = async (req, res) => {
     const REFRESH_TOKEN_EXPIRES_IN = 7*24*60*60*1000; // 7 days in milliseconds
 
     //tìm user
-    const user = await UserModel.findOne({ email: email.trim().toLowerCase() });
+    const user = await UserModel.findOne({ username: username.trim().toLowerCase() });
     if (!user) {
         return res.status(404).json({ error: 'User not found' });
     }
@@ -98,7 +98,7 @@ const signIn = async (req, res) => {
 
     //trả về access token
     const token = jwt.sign(
-        { userId: user._id, email: user.email },
+        { userId: user._id, username: user.username, role: user.role },
         process.env.JWT_SECRET,
         { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
     );

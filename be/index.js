@@ -3,6 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './libs/db.js';
 import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express'
+import fs from 'fs'
+
 dotenv.config({quiet: true});
 
 const app = express();
@@ -10,6 +13,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
+
+//swagger doc
+const swaggerDoc = JSON.parse(fs.readFileSync('./swagger.json', 'utf-8'))
+app.use('/apis-doc', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
 
 // Import routers
 import authRouter from './routes/authRouter.js';
@@ -23,7 +30,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRouter);
 
 // private
-app.use('/api/user',privateRoute , userRouter);
+app.use('/api/users',privateRoute , userRouter);
 
 
 const PORT = process.env.PORT || 5000;
