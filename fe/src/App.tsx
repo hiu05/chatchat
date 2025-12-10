@@ -1,10 +1,14 @@
+import { BrowserRouter, Routes, Route } from 'react-router'
+import SignInPage from './pages/SignInPage'
+
+
 function App() {
   return (
-    <>
-     <h1 className="text-3xl font-bold underline">
-    Hello world!
-  </h1>
-    </>
+    <BrowserRouter>
+      <Routes>
+          <Route path='/' element={<SignInPage/>}/>
+      </Routes>
+    </BrowserRouter>
   )
 }
 

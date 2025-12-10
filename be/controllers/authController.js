@@ -9,48 +9,64 @@ import VerifyModel from "../models/verifyModel.js";
 
 const signUp = async (req, res) => {
     try {
-    const { username, password, phone, verifyCode} = req.body;
+    //
+    //check input
+    //
+    const { username, password, phone, displayName, verifyCode} = req.body;
     const email = String(req.body.email || "").trim().toLowerCase();
 
-    if (!username || !password || !email) {
+    if (!username || !password || !email || !displayName) {
         return res.status(400).json({ error: 'Username, password, and email are required' });
     }
-
+    //
+    //check verify code
+    //
     const existingVerify = await VerifyModel.findOne({ email: email, isUse: false }).sort({ createdAt: -1 });
     if (!existingVerify) {
         return  res.status(400).json({ error: 'No verification code found for this email' });
     }
-    
+
     const isCodeValid = await bcrypt.compare(verifyCode, existingVerify.verifyCode);
     if (!isCodeValid) {
         return res.status(400).json({ error: 'Invalid verification code' });
     }
-
-    const passwordHash = await bcrypt.hashSync(password, 10); 
+    //
+    //checkDuplicate
+    //
+    const checkDuplicate = await isDuplicate(UserModel, 'email', email);
+    if (checkDuplicate) {
+        return res.status(409).json({ error: 'Email already exists' });
+    }
+    //
+    //hash pass and save
+    //
+    const passwordHash = bcrypt.hashSync(password, 10); 
     
     const newUser = new UserModel({
         username,
         password: passwordHash,
         email,
         phone,
+        displayName
     });
 
-    const checkDuplicate = await isDuplicate(UserModel, 'email', email);
-    if (checkDuplicate) {
-        return res.status(409).json({ error: 'Email already exists' });
-    }
-
+    //defaut cá nhân
     const newPersonalize = new PersonalizeModel({
         userId: newUser._id,
     });
-    await newPersonalize.save();
-    newUser.personalizeId = newPersonalize._id;
 
-    newUser.save()
+
+  
+    await newUser.save()
         .then(user => res.status(201).json({ message: 'User created successfully', user }))
         .catch(err => res.status(500).json({ error: 'Error creating user', details: err }));
     
-    
+    await newPersonalize.save();
+    newUser.personalizeId = newPersonalize._id;
+
+    existingVerify.isUse = true;
+    await existingVerify.save();
+
 
     } catch (err) {
         res.status(500).json({ error: 'Internal server error', details: err });
