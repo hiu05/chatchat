@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router'
-import SignInPage from './pages/SignInPage'
+import HomePage from './pages/HomePage'
 
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-          <Route path='/' element={<SignInPage/>}/>
+          <Route path='/' element={<HomePage/>}/>
       </Routes>
     </BrowserRouter>
   )
