@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const personalizeSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     avatarUrl: { type: String },
     avatarId: { type: String },
     bio: { type: String, maxlength: 500 },
