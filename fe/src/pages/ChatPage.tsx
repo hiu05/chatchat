@@ -1,4 +1,4 @@
-import { AppSideBar } from "@/components"
+import { AppSideBar } from "@/components/sidebar"
 
 const HomePage = () => {
   return (

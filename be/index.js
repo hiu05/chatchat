@@ -11,7 +11,10 @@ dotenv.config({quiet: true});
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173", // cho phép frontend
+    credentials: true                // nếu cần gửi cookie/session
+}));
 app.use(cookieParser());
 
 //swagger doc

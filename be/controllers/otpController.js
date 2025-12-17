@@ -1,8 +1,10 @@
+import { ok } from "assert";
 import VerifyModel from "../models/verifyModel.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
 export const sendOTP = async (req, res) => {  
+    console.log(req.body);
     const { email } =  req.body;
     const OTP_TTL = 10 * 60 * 1000; // 10 minutes in milliseconds
 
@@ -19,7 +21,7 @@ export const sendOTP = async (req, res) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
-        subject: "Xin chào từ Nodemailer",
+        subject: "Xin chào từ ChitChat",
         text: ` ${verifyCode}`,
     };
 
@@ -34,10 +36,22 @@ export const sendOTP = async (req, res) => {
             res.status(200).send("Email sent successfully");
         }
     })
-    const newVerify = new VerifyModel({
-        email: email,
-        verifyCode: hashedCode,
-        expiresAt: new Date(Date.now() + OTP_TTL),
-    });
-    newVerify.save();
+
+    await VerifyModel.findOneAndUpdate(
+  { email }, // điều kiện tìm theo email
+  { 
+    verifyCode: hashedCode, 
+    expiresAt: new Date(Date.now() + OTP_TTL) 
+  },
+  { 
+    upsert: true,   // nếu chưa có thì tạo mới
+    new: true       // trả về document sau khi update
+  }
+);
+    
+    res.status(201).json({
+        err: ok,
+        message: "Mã xát minh đã gửi đến mail của bạn"
+    })
+
 };

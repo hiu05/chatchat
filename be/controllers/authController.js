@@ -1,4 +1,3 @@
-import UserModel from "../Models/userModel.js";
 import PersonalizeModel from "../models/personalizeModel.js";
 import { isDuplicate } from "../libs/dupcheck.js";
 import SessionModel from "../models/sessionModel.js";
@@ -6,14 +5,16 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import VerifyModel from "../models/verifyModel.js";
+import UserModel from "../models/userModel.js";
+import mongoose from "mongoose";
 
 const signUp = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const { username, password, phone, displayName, verifyCode } = req.body;
-    const email = String(req.body.email || "").trim().toLowerCase();
+    const { username, password, phone, displayName, verifyCode } = req.body.payload;
+    const email = String(req.body.payload.email || "").trim().toLowerCase();
 
     if (!username || !password || !email) {
       return res.status(400).json({ error: 'Username, password, and email are required' });
@@ -29,12 +30,16 @@ const signUp = async (req, res) => {
     }
 
     const isCodeValid = await bcrypt.compare(verifyCode, existingVerify.verifyCode);
+    console.log(isCodeValid);
+    
     if (!isCodeValid) {
       return res.status(400).json({ error: 'Invalid verification code' });
     }
 
     // check duplicate
     const checkDuplicate = await isDuplicate(UserModel, 'email', email);
+    console.log(checkDuplicate);
+    
     if (checkDuplicate) {
       return res.status(409).json({ error: 'Email already exists' });
     }
