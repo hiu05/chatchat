@@ -48,17 +48,17 @@ export function SignupForm({
       return;
     }
     const email = getValues("email");
-    
+
     await sendOTP(email)
-  
+
   }
 
   const handleRegister = async (data: SignUpFormValues) => {
-    
-      // const {username, password, verifyCode, email, displayName} = data
-      await signUp(data)
 
-    
+    // const {username, password, verifyCode, email, displayName} = data
+    await signUp(data)
+
+
   }
 
   return (
@@ -136,7 +136,9 @@ export function SignupForm({
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Đang gửi..." : "Đăng ký"}
               </Button>
-
+              <FieldDescription className="text-center">
+                <div>You&apos;re already have an account? <a href="/login"><u>Login</u></a></div>
+                </FieldDescription>
             </div>
           </form>
           <div className="bg-muted relative hidden md:block">

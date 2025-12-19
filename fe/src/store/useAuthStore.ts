@@ -12,8 +12,11 @@ export const useAuthStore = create<AuthState>()((set) => ({
   try {
     const res = await authService.sendOTP(email);
     toast.success(res.message || "OTP đã được gửi thành công!");
-  } catch {
-    toast.error("Gửi OTP thất bại");
+
+  } catch (err){
+
+    toast.error(`Gửi OTP thất bại: ${err.response.data.message}`);
+    
   }
 
   },
@@ -26,7 +29,8 @@ export const useAuthStore = create<AuthState>()((set) => ({
       const res = await authService.signUp(data)
       toast.success(res.message ||"Đăng ký thành công")
 
-    } catch {
+    } catch  {
+
       toast.error("Lỗi khi đăng ký");
 
     } finally {
