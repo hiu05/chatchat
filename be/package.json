@@ -3,9 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "imports": {
+    "#/*": "./src/*",
+    "#controllers/*": "./src/controllers/*",
+    "#routes/*": "./src/routes/*",
+    "#libs/*": "./src/libs/*",
+    "#models/*": "./src/models/*"
+  },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
+    "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
