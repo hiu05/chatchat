@@ -29,9 +29,11 @@ export function LoginForm({
               </div>
               <Field>
                 <FieldLabel htmlFor="email">Email or Username</FieldLabel>
+                <FieldLabel htmlFor="email">Email or Username</FieldLabel>
                 <Input
                   id="email"
                   type="email"
+                  placeholder="m@example.com or username"
                   placeholder="m@example.com or username"
                   required
                 />
