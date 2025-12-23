@@ -34,7 +34,6 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com or username"
-                  placeholder="m@example.com or username"
                   required
                 />
               </Field>
