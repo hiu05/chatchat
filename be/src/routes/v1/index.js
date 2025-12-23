@@ -2,9 +2,9 @@ import express from 'express';
 import {AuthRouter} from './authRouter.js';
 import {UserRouter}from './userRouter.js';
 
-const Router = express.Router();
+const router = express.Router();
 
-Router.use('/v1', AuthRouter)
-Router.use('/v1', UserRouter)
+router.use('/v1', AuthRouter)
+router.use('/v1', UserRouter)
 
-export const APIs_v1 =  Router
+export const APIs_v1 =  router

@@ -5,6 +5,7 @@
       "#/*": ["./src/*"],
       "#controllers/*": ["src/controllers/*"],
       "#routes/*": ["src/routes/*"],
+      "#models/*": ["src/models/*"],
       "#libs/*": ["src/libs/*"]
     }
   }

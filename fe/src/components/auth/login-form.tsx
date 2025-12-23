@@ -9,6 +9,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { loginSchema } from "@/lib/formSchema"
 
 export function LoginForm({
   className,
@@ -27,11 +28,11 @@ export function LoginForm({
                 </p>
               </div>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email">Email or Username</FieldLabel>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="m@example.com or username"
                   required
                 />
               </Field>
