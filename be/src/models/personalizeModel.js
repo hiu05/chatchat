@@ -10,6 +10,4 @@ const personalizeSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const PersonalizeModel = mongoose.model("Personalize", personalizeSchema);
-
-export default PersonalizeModel;
+export const PersonalizeModel = mongoose.model("Personalize", personalizeSchema);

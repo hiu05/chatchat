@@ -11,6 +11,5 @@ const verifySchema = new mongoose.Schema({
 
 verifySchema.index({ "expiresAt": 1 }, { expireAfterSeconds: 0 });
 
-const VerifyModel = mongoose.model("Verify", verifySchema);
-
-export default VerifyModel;
+export const VerifyModel = mongoose.model("Verify", verifySchema);
+ 

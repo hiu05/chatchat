@@ -13,7 +13,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
     const res = await authService.sendOTP(email);
     toast.success(res.message || "OTP đã được gửi thành công!");
 
-  } catch (err){
+  } catch (err: any){
 
     toast.error(`Gửi OTP thất bại: ${err.response.data.message}`);
     

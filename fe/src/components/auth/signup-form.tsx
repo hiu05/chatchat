@@ -9,7 +9,7 @@ import {
   // FieldSeparator,
 } from "@/components/ui/field"
 import { User, KeyRound } from "lucide-react"
-import { InputField } from "./InputField"
+import { InputField } from "@/components/ui/InputField"
 import { useForm } from "react-hook-form"
 import { signUpSchema } from "@/lib/formSchema"
 import { zodResolver } from "@hookform/resolvers/zod"

@@ -8,7 +8,8 @@
     "#controllers/*": "./src/controllers/*",
     "#routes/*": "./src/routes/*",
     "#libs/*": "./src/libs/*",
-    "#models/*": "./src/models/*"
+    "#models/*": "./src/models/*",
+    "#config/*": "./src/config/*"
   },
   "scripts": {
     "start": "node index.js",

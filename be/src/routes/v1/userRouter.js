@@ -3,7 +3,7 @@ import express from "express";
 
 const router = express.Router()
 
-router.route('user/:id')
+router.route('user/profile')
     .get(UserControllers.getUserProfile)
 
 export const UserRouter = router;

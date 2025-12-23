@@ -1,7 +1,28 @@
-// config/corsOptions.js
-const corsOptions = {
-  origin: ["http://localhost:5173"], 
-  credentials: true
-};
+import cors from 'cors';
+import { env } from './env.js'
 
-export default corsOptions;
+const allowedOrigins = env.CORS_ORIGINS.split(',').map(o => o.trim())
+
+// Cấu hình CORS chi tiết
+const corsOptions = {
+  origin(origin, callback) {
+    // Cho phép nếu không có origin (ví dụ Postman, curl)
+    if (!origin) return callback(null, true)
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+    // Nếu domain không được phép
+    callback(new Error(`Origin ${origin} not allowed by CORS`))
+  },
+  credentials: true, // cho phép gửi cookies/authorization header
+  optionsSuccessStatus: 204, // status code cho preflight (OPTIONS)
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+  ],
+}
+
+export const corsConfigs = cors(corsOptions)
