@@ -1,0 +1,28 @@
+import mongoose from 'mongoose';
+const friendshipSchema = new mongoose.Schema(
+  {
+    requesterId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    receiverId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'accepted', 'rejected', 'blocked'],
+      default: 'pending',
+    },
+  },
+  { timestamps: true }
+);
+
+friendshipSchema.index(
+  { requesterId: 1, receiverId: 1 },
+  { unique: true }
+);
+
+export default mongoose.model('Friendship', friendshipSchema);

@@ -78,10 +78,8 @@ const signUp = async (req, res) => {
 const signIn = async (req, res) => {
     try {
         //check input
-        const { login, password } = req.body;
-        const identifier = login.trim().toLowerCase();
-
-        if (!login || !password) {
+        const { username, password } = req.body.payload;
+        if (!username || !password) {
             return res.status(400).json({ error: 'Thiếu thông tin đăng nhập' });
         }
 
@@ -89,28 +87,29 @@ const signIn = async (req, res) => {
         const REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
         //tìm user
-        const user = await UserModel.findOne({
-            $or: [
-                { username: identifier },
-                { email: identifier }
-            ]
-        });
-
+        const user = await UserModel.findOne({ username: username });
+        console.log(user);
+        
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error:  "Invalid login credentials" });
         }
         //so sánh mật khẩu
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid password' });
+            return res.status(401).json({ error: 'Invalid login credentials' });
         }
 
         //trả về access token
+        console.log('ok pass');
+        
         const token = jwt.sign(
-            { userId: user._id, username: user.username, role: user.role },
+            { userId: user._id},
             process.env.JWT_SECRET,
             { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
         );
+        
+        // Xoá session cũ trước khi tạo mới
+        await SessionModel.deleteMany({ userId: user._id });
 
         //tạo refresh token
         const refreshToken = crypto.randomBytes(64).toString('hex');

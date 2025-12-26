@@ -1,14 +1,15 @@
 import type { User } from "./usertype";
 
-export interface SignUpType {
+export interface LoginType {
     username: string,
-    email: string,
     password: string,
+}
+export interface SignUpType extends LoginType {
+    email: string,
     phone?: string,
     displayName:string,
     verifyCode: string,
 }
-
 export interface AuthState {
     accessToken: string | null,
     user: User | null,
@@ -18,5 +19,6 @@ export interface AuthState {
 
     signUp: (data: SignUpType) => Promise<void>,
 
+    signIn: (data: LoginType) => Promise<void>,
 
 }

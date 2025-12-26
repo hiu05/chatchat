@@ -5,21 +5,33 @@ import {
   Field,
   FieldDescription,
   FieldGroup,
-  FieldLabel,
   FieldSeparator,
 } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-// import { loginSchema } from "@/lib/formSchema"
+import { loginSchema } from "@/lib/formSchema"
+import type { LoginFormValues } from "@/lib/formSchema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { InputField } from "../ui/InputField"
+import { useAuthStore } from "@/store/useAuthStore"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const { signIn } = useAuthStore()
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema)
+  })
+
+  const loginHandler = async (data: LoginFormValues) => {
+    await signIn(data)
+  }
+  
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit(loginHandler)}>
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -28,18 +40,29 @@ export function LoginForm({
                 </p>
               </div>
               <Field>
-                <FieldLabel htmlFor="email">Email or Username</FieldLabel>
-                <FieldLabel htmlFor="email">Email or Username</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com or username"
-                  required
-                />
+                 <InputField
+                id="username"
+                label="Tên đăng nhập"
+                placeholder="username"
+                error={errors.username?.message}
+                register={register("username")}
+              />
               </Field>
               <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
+             
+                 <InputField
+                id="password"
+                label="Mật khẩu"
+                type="password"
+                placeholder="password"
+                register={register("password")}
+                error={errors.password?.message}
+              />
+
+              </Field>
+              <Field>
+                <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Đang gửi':'Đăng Nhập'}</Button>
+              </Field>   <div className="flex items-center">
                   <a
                     href="#"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
@@ -47,11 +70,6 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
-              </Field>
-              <Field>
-                <Button type="submit">Login</Button>
-              </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
               </FieldSeparator>

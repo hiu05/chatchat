@@ -7,7 +7,9 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     phone: { type: String, sparse: true },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
-    personalizeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Personalize' }
+    personalizeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Personalize' },
+    status: { type: String, enum: ['online', 'offline', 'busy'], default: 'offline' },
+    lastActiveAt: { type: Date },
 },{
     timestamps: true
 });

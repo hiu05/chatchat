@@ -54,11 +54,7 @@ export function SignupForm({
   }
 
   const handleRegister = async (data: SignUpFormValues) => {
-
-    // const {username, password, verifyCode, email, displayName} = data
     await signUp(data)
-
-
   }
 
   return (

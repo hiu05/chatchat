@@ -1,4 +1,4 @@
-import {UserModel} from '#models/index.js';
+import { UserModel } from '#models/index.js';
 
 const getUserProfile = async (req, res) => {
     try {
@@ -13,4 +13,14 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-export const UserControllers = { getUserProfile }
+const searchUser = async (req, res) => {
+    const { q } = req.query;
+
+    const users = await User.find({
+        username: { $regex: q, $options: 'i' },
+    }).limit(10);
+
+    res.json(users);
+};
+
+export const UserControllers = { getUserProfile, searchUser };
